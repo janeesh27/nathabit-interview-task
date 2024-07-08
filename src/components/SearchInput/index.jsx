@@ -10,7 +10,6 @@ const SearchInput = ({ onSearch }) => {
     const newQuery = event.target.value;
     setQuery(newQuery);
     if (onSearch) {
-      console.log("Calling onSearch with query:", newQuery);
       onSearch(newQuery);
     } else {
       console.error("API Error");

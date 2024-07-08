@@ -6,6 +6,7 @@ import MovieList from "./components/MovieList";
 import Loader from "./components/Loader";
 import MovieDetail from "./components/MovieDetails";
 import { Link } from "react-router-dom";
+import Favorites from "./components/Favorites";
 
 function App() {
   const [movies, setMovies] = useState([]);
@@ -77,12 +78,21 @@ function App() {
   const handleAddToFavorites = (movie) => {
     setFavorites((prevFavorites) => {
       if (prevFavorites.find((fav) => fav.imdbID === movie.imdbID)) {
-        return prevFavorites; // Movie is already in favorites
+        return prevFavorites;
       } else {
         return [...prevFavorites, movie];
       }
     });
   };
+
+  useEffect(() => {
+    const storedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
+    setFavorites(storedFavorites);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+  }, [favorites]);
 
   useEffect(() => {
     fetchTopRatedMovies();
@@ -92,7 +102,7 @@ function App() {
     <>
       <div className="bg-[#8f8f8f] py-10">
         <Link to="/favorites">
-          <div className="absolute hover:scale-105 right-8 font-inter font-semibold bg-black p-6 rounded-lg text-white top-8">
+          <div className="absolute hover:scale-105 right-2 top-2 sm:right-8 font-inter font-semibold bg-black p-2 sm:p-6  text-white sm:top-8">
             Favorites
           </div>
         </Link>
