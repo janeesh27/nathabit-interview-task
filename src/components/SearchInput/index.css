@@ -61,7 +61,6 @@
 .input-container {
   position: relative;
   width: 100%;
-  max-width: 270px;
 }
 
 .input {
@@ -177,16 +176,6 @@
 
 .input:not(:placeholder-shown) {
   animation: glitch 1s linear infinite;
-}
-
-.input-container::after {
-  content: "|";
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #000;
-  animation: blink 0.7s step-end infinite;
 }
 
 @keyframes blink {
