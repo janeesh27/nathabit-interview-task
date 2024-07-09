@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import axios from "axios";
 import Loader from "../Loader/index";
 import MovieList from "../MovieList";
 import SearchInput from "../SearchInput";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const SearchResults = () => {
   const location = useLocation();
@@ -14,6 +14,8 @@ const SearchResults = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
+  const [favorites, setFavorites] = useState([]);
+  const navigate = useNavigate();
 
   const fetchMovies = async (query, page) => {
     try {
@@ -42,6 +44,28 @@ const SearchResults = () => {
     }
   }, [query, currentPage]);
 
+  useEffect(() => {
+    const storedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
+    setFavorites(storedFavorites);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+  }, [favorites]);
+
+  const handleAddToFavorites = (movie) => {
+    setFavorites((prevFavorites) => {
+      const isFavorite = prevFavorites.find(
+        (fav) => fav.imdbID === movie.imdbID
+      );
+      if (isFavorite) {
+        return prevFavorites.filter((fav) => fav.imdbID !== movie.imdbID);
+      } else {
+        return [...prevFavorites, movie];
+      }
+    });
+  };
+
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
@@ -64,6 +88,14 @@ const SearchResults = () => {
 
   return (
     <div className="bg-[#8f8f8f] py-10">
+      <button
+        onClick={() => {
+          navigate("/favorites", { state: favorites });
+        }}
+        className="absolute hover:scale-105 right-2 top-2 sm:right-8 font-inter font-semibold bg-black p-2 sm:p-6 text-white sm:top-8"
+      >
+        Favorites
+      </button>
       <div className="flex gap-y-2 items-center flex-col justify-center">
         <Link to="/">
           <h1 className="font-inter text-[38px] font-bold">
@@ -78,7 +110,12 @@ const SearchResults = () => {
         )}
         {error && <p className="text-black text-[32px] mt-[50px]">{error}</p>}
         {!loading && !error && (
-          <MovieList movies={movies} onSelectMovie={() => {}} />
+          <MovieList
+            movies={movies}
+            onSelectMovie={() => {}}
+            onAddToFavorites={handleAddToFavorites}
+            favorites={favorites}
+          />
         )}
         <div className="flex w-[320px] justify-center mx-auto gap-4 mt-4">
           {paginationRange.map((page) => (

@@ -1,16 +1,23 @@
 import React from "react";
-import MovieList from "../MovieList";
+import { useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-const Favorites = ({ favorites }) => {
-  console.log(favorites);
+const Favorites = () => {
+  const location = useLocation();
+
   return (
     <div className="flex flex-col justify-center">
-      <h1 className="text-[32px] bg-white font-inter sm:text-[64px] font-bold text-center">
+      <h1 className="text-[32px] bg-white font-inter md:py-[60px] sm:text-[64px] font-bold text-center">
         Your Favorites
       </h1>
+      <Link to="/">
+        <div className="absolute top-2 md:top-8 text-[24px] text-white bg-black p-2 md:p-6 font-inter font-bold right-8">
+          Back
+        </div>
+      </Link>
       <div className="flex flex-wrap justify-center">
-        {favorites && favorites.length > 0 ? (
-          favorites.map((movie) => (
+        {location.state && location.state.length > 0 ? (
+          location.state.map((movie) => (
             <div
               key={movie.imdbID}
               className="movie-item flex flex-col p-5 bg-black m-2"
